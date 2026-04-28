@@ -4,8 +4,8 @@ import { cn } from "@/lib/utils";
 
 const tabs = [
   { id: "safety",    label: "Safety",    icon: Shield,    path: "/safety" },
-  { id: "explore",   label: "Explore",   icon: Globe,     path: "/explore" },
   { id: "translate", label: "Translate", icon: Languages, path: "/translate" },
+  { id: "explore",   label: "Explore",   icon: Globe,     path: "/explore" },
   { id: "health",    label: "Health",    icon: Heart,     path: "/health" },
   { id: "profile",   label: "Profile",   icon: User,      path: "/profile" },
 ];
@@ -13,7 +13,7 @@ const tabs = [
 const AppShell = () => {
   const location  = useLocation();
   const navigate  = useNavigate();
-  const activeTab = tabs.find(t => location.pathname.startsWith(t.path))?.id || "safety";
+  const activeTab = tabs.find(t => location.pathname.startsWith(t.path))?.id || "explore";
 
   return (
     /*
@@ -42,8 +42,8 @@ const AppShell = () => {
           </div>
         </div>
 
-        {/* Scrollable content — min-h-0 is critical for flex + overflow to work on iOS */}
-        <div className="flex-1 overflow-y-auto hide-scrollbar min-h-0">
+        {/* Scrollable content — overflow-x-hidden prevents horizontal scroll on all tabs */}
+        <div className="flex-1 overflow-y-auto overflow-x-hidden hide-scrollbar min-h-0">
           <Outlet />
         </div>
 
