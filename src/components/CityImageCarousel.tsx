@@ -7,6 +7,8 @@ import { type CityVisual, getCityWikiSlugs } from "@/data/cityVisuals";
 // Fetches thumbnail URLs from Wikipedia REST API (free, CORS-enabled, no key).
 // Upsizes the thumbnail by replacing the width in the Wikimedia CDN URL.
 
+const LS_PREFIX = "city_photos_v2_";
+
 async function fetchWikiPhoto(slug: string): Promise<string | null> {
   try {
     const res = await fetch(
@@ -18,31 +20,48 @@ async function fetchWikiPhoto(slug: string): Promise<string | null> {
     const src: string | undefined =
       data?.originalimage?.source ?? data?.thumbnail?.source;
     if (!src) return null;
-    // Upsize Wikimedia thumbnail to 700px wide for good card quality
-    return src.replace(/\/\d+px-/, "/700px-");
+    // 400px is enough for mobile cards and loads ~3× faster than 700px
+    return src.replace(/\/\d+px-/, "/400px-");
   } catch {
     return null;
   }
 }
 
-// ── Hook: loads 3 photos for a city from Wikipedia ───────────────────────────
-const photoCache = new Map<string, (string | null)[]>();
+// ── Hook: loads 3 photos for a city — memory cache → localStorage → Wikipedia ─
+const memCache = new Map<string, (string | null)[]>();
+
+function readLS(key: string): (string | null)[] | null {
+  try {
+    const raw = localStorage.getItem(LS_PREFIX + key);
+    return raw ? (JSON.parse(raw) as (string | null)[]) : null;
+  } catch { return null; }
+}
+
+function writeLS(key: string, value: (string | null)[]) {
+  try { localStorage.setItem(LS_PREFIX + key, JSON.stringify(value)); } catch { /* quota */ }
+}
 
 function useCityPhotos(cityName: string) {
-  const slugs = getCityWikiSlugs(cityName);
+  const slugs    = getCityWikiSlugs(cityName);
   const cacheKey = cityName.toLowerCase();
 
-  const [photos, setPhotos] = useState<(string | null)[]>(
-    () => photoCache.get(cacheKey) ?? [null, null, null]
-  );
+  const [photos, setPhotos] = useState<(string | null)[]>(() => {
+    // 1. memory cache (fastest — same session)
+    if (memCache.has(cacheKey)) return memCache.get(cacheKey)!;
+    // 2. localStorage cache (fast — persists across sessions)
+    const ls = readLS(cacheKey);
+    if (ls) { memCache.set(cacheKey, ls); return ls; }
+    return [null, null, null];
+  });
 
   useEffect(() => {
-    if (photoCache.has(cacheKey)) return; // already fetched
+    if (memCache.has(cacheKey) && memCache.get(cacheKey)!.some(Boolean)) return;
     let cancelled = false;
 
     Promise.all(slugs.map(fetchWikiPhoto)).then((results) => {
       if (cancelled) return;
-      photoCache.set(cacheKey, results);
+      memCache.set(cacheKey, results);
+      writeLS(cacheKey, results);
       setPhotos(results);
     });
 
