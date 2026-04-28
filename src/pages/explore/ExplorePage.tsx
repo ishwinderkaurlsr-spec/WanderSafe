@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronRight, Search, Shield, Utensils, MapPin, Map, BookOpen } from "lucide-react";
+import { ChevronRight, Search, Shield, Utensils, MapPin, Map, BookOpen, Shirt, Zap, AlertCircle, DollarSign, Download, Rainbow } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useCities } from "@/hooks/use-cities";
 import { cn } from "@/lib/utils";
@@ -10,16 +10,16 @@ import { getCityVisual } from "@/data/cityVisuals";
 import { CityImageCarousel } from "@/components/CityImageCarousel";
 
 const QUICK_ACTIONS = [
-  { label: "🏳️‍🌈 LGBTQ+ Safety",  path: "/explore/lgbtq" },
-  { label: "Restaurants",         path: "/explore/restaurants",  icon: Utensils },
-  { label: "Places",              path: "/explore/destinations", icon: MapPin },
-  { label: "Safety Map",          path: "/explore/heatmap",      icon: Map },
-  { label: "Stories",             path: "/explore/stories",      icon: BookOpen },
-  { label: "👗 Dress Codes",      path: "/explore/dress-codes" },
-  { label: "✨ AI Food Advisor",  path: "/explore/food-advisor" },
-  { label: "⚠️ Allergy Card",    path: "/explore/allergy-card" },
-  { label: "💰 Fair Prices",      path: "/explore/fair-prices" },
-  { label: "📥 Offline Packs",   path: "/explore/offline" },
+  { label: "LGBTQ+ Safety",  path: "/explore/lgbtq",          icon: Rainbow },
+  { label: "Restaurants",    path: "/explore/restaurants",    icon: Utensils },
+  { label: "Places",         path: "/explore/destinations",   icon: MapPin },
+  { label: "Safety Map",     path: "/explore/heatmap",        icon: Map },
+  { label: "Stories",        path: "/explore/stories",        icon: BookOpen },
+  { label: "Dress Codes",    path: "/explore/dress-codes",    icon: Shirt },
+  { label: "AI Food Advisor",path: "/explore/food-advisor",   icon: Zap },
+  { label: "Allergy Card",   path: "/explore/allergy-card",   icon: AlertCircle },
+  { label: "Fair Prices",    path: "/explore/fair-prices",    icon: DollarSign },
+  { label: "Offline Packs",  path: "/explore/offline",        icon: Download },
 ];
 
 const ExplorePage = () => {

@@ -80,7 +80,7 @@ const SOSPage = () => {
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-center px-5 -mt-8">
+      <div className="flex-1 flex flex-col items-center justify-center px-5 py-4">
         <AnimatePresence mode="wait">
           {isActivated ? (
             <motion.div key="activated" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.8, opacity: 0 }} className="flex flex-col items-center gap-4">
@@ -104,8 +104,6 @@ const SOSPage = () => {
             </motion.div>
           ) : (
             <motion.div key="default" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.8, opacity: 0 }} className="flex flex-col items-center gap-4">
-              <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Tap for SOS</p>
-
               {/* GPS badge */}
               <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-card border border-border text-[11px] font-medium text-muted-foreground">
                 <MapPin className="w-3 h-3 text-primary flex-shrink-0" />
@@ -124,7 +122,9 @@ const SOSPage = () => {
                   <span className="text-2xl font-heading font-extrabold text-primary-foreground">SOS</span>
                 </div>
               </motion.button>
-              <p className="text-xs text-muted-foreground text-center max-w-[200px] mt-2">Sends your GPS to police, embassy, and emergency contacts</p>
+
+              <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Tap for SOS</p>
+              <p className="text-xs text-muted-foreground text-center max-w-[200px]">Sends your GPS to police, embassy, and emergency contacts</p>
             </motion.div>
           )}
         </AnimatePresence>
@@ -134,21 +134,38 @@ const SOSPage = () => {
         <h3 className="text-sm font-heading font-semibold text-foreground mb-3">Quick Actions</h3>
         <div className="grid grid-cols-1 gap-2">
           {[
-            { icon: MapPin, label: "Share Live Location", desc: "With trusted contacts", path: "/safety/location" },
-            { icon: Phone, label: "Fake Call", desc: "Simulate incoming call", path: "/safety/fake-call" },
+            { icon: Phone, label: "Fake Call", desc: "Simulate an incoming call", path: "/safety/fake-call" },
+            { icon: MapPin, label: "Share Live Location", desc: "With trusted contacts", path: "/safety/location", comingSoon: true },
             { icon: Shield, label: "Safe Transport", desc: "Verified taxi & rideshare", path: "/safety/transport" },
             { icon: Train, label: "Transit Guide", desc: "City transit with safety layer", path: "/safety/transit" },
             { icon: Car, label: "Ride Verification", desc: "Verify & track your ride", path: "/safety/ride-verify" },
             { icon: Route, label: "Journey Planner", desc: "Safety-first route planning", path: "/safety/journey" },
             { icon: UsersIcon, label: "Women-Only Transport", desc: "Women-only carriages & rides", path: "/safety/women-transport" },
           ].map((action) => (
-            <button key={action.label} onClick={() => navigate(action.path)} className="flex items-center gap-3 p-3 bg-card rounded-xl border border-border hover:border-primary/30 transition-all group">
-              <div className="w-10 h-10 rounded-xl bg-coral-light flex items-center justify-center flex-shrink-0"><action.icon className="w-5 h-5 text-primary" /></div>
+            <button
+              key={action.label}
+              onClick={() => !action.comingSoon && navigate(action.path)}
+              disabled={action.comingSoon}
+              className={cn(
+                "flex items-center gap-3 p-3 rounded-xl border transition-all group",
+                action.comingSoon
+                  ? "bg-muted/50 border-border opacity-60 cursor-not-allowed"
+                  : "bg-card border-border hover:border-primary/30"
+              )}
+            >
+              <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0", action.comingSoon ? "bg-muted" : "bg-coral-light")}>
+                <action.icon className={cn("w-5 h-5", action.comingSoon ? "text-muted-foreground" : "text-primary")} />
+              </div>
               <div className="flex-1 text-left">
-                <p className="text-sm font-medium text-foreground">{action.label}</p>
+                <div className="flex items-center gap-2">
+                  <p className={cn("text-sm font-medium", action.comingSoon ? "text-muted-foreground" : "text-foreground")}>{action.label}</p>
+                  {action.comingSoon && (
+                    <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-muted-foreground/20 text-muted-foreground font-medium whitespace-nowrap">Coming Soon</span>
+                  )}
+                </div>
                 <p className="text-xs text-muted-foreground">{action.desc}</p>
               </div>
-              <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+              {!action.comingSoon && <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />}
             </button>
           ))}
         </div>

@@ -31,9 +31,9 @@ const TranslatePage = () => {
               <feature.icon className="w-6 h-6 text-primary" />
             </div>
             <div className="flex-1">
-              <div className="flex items-center gap-2 mb-0.5">
+              <div className="flex items-center gap-2 mb-0.5 flex-wrap">
                 <h3 className="text-sm font-heading font-bold">{feature.title}</h3>
-                <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{feature.badge}</span>
+                <span className="inline-flex items-center text-[9px] px-1.5 py-0.5 rounded-full bg-primary/10 text-primary font-medium whitespace-nowrap leading-none">{feature.badge}</span>
               </div>
               <p className="text-xs text-muted-foreground">{feature.desc}</p>
             </div>

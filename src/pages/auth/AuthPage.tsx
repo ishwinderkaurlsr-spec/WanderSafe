@@ -36,7 +36,14 @@ const AuthPage = () => {
           options: { emailRedirectTo: window.location.origin },
         });
         if (error) throw error;
-        toast.success("Check your email to confirm your account!");
+        // Try signing in immediately — works when email confirmation is disabled
+        const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+        if (!signInError) {
+          toast.success("Account created! Welcome aboard!");
+          navigate("/safety");
+        } else {
+          toast.success("Account created! Check your email to confirm, then sign in.");
+        }
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;

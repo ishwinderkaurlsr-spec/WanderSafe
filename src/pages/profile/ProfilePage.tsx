@@ -129,7 +129,7 @@ const ProfilePage = () => {
     { icon: Luggage, label: "Packing Assistant", desc: "AI-powered packing lists", path: "/profile/packing", badge: "AI" },
     { icon: Shirt, label: "Outfit Advisor", desc: "Daily outfit suggestions", path: "/profile/outfit", badge: "AI" },
     { icon: Sparkles, label: "Capsule Wardrobe", desc: "Mix-and-match guide", path: "/profile/capsule" },
-    { icon: Users, label: "Travelers Nearby", desc: "Meet verified women travelers", path: "/profile/social", badge: "New" },
+    { icon: Users, label: "Travelers Nearby", desc: "Meet verified travelers nearby", path: "/profile/social", badge: "Coming Soon", comingSoon: true },
   ];
 
   const settingsList = [
@@ -213,22 +213,23 @@ const ProfilePage = () => {
             {travelTools.map(f => (
               <button
                 key={f.label}
-                onClick={() => navigate(f.path)}
-                className="flex items-center gap-3 w-full p-3 rounded-xl bg-card border border-border hover:border-primary/30 transition-all group"
+                onClick={() => !f.comingSoon && navigate(f.path)}
+                disabled={f.comingSoon}
+                className={`flex items-center gap-3 w-full p-3 rounded-xl border transition-all group ${f.comingSoon ? "bg-muted/50 border-border opacity-60 cursor-not-allowed" : "bg-card border-border hover:border-primary/30"}`}
               >
-                <div className="w-10 h-10 rounded-xl bg-coral-light flex items-center justify-center flex-shrink-0">
-                  <f.icon className="w-5 h-5 text-primary" />
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${f.comingSoon ? "bg-muted" : "bg-coral-light"}`}>
+                  <f.icon className={`w-5 h-5 ${f.comingSoon ? "text-muted-foreground" : "text-primary"}`} />
                 </div>
                 <div className="flex-1 text-left">
                   <div className="flex items-center gap-2">
                     <p className="text-sm font-medium">{f.label}</p>
                     {"badge" in f && f.badge && (
-                      <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-primary/10 text-primary font-medium">{f.badge}</span>
+                      <span className={`inline-flex items-center text-[9px] px-1.5 py-0.5 rounded-full font-medium whitespace-nowrap ${f.comingSoon ? "bg-muted-foreground/20 text-muted-foreground" : "bg-primary/10 text-primary"}`}>{f.badge}</span>
                     )}
                   </div>
                   <p className="text-xs text-muted-foreground">{f.desc}</p>
                 </div>
-                <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                {!f.comingSoon && <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />}
               </button>
             ))}
           </div>
@@ -379,14 +380,17 @@ const ProfilePage = () => {
       </div>
 
       {/* ── Premium CTA ── */}
-      <div className="mx-5 mb-4 p-4 rounded-2xl bg-card border border-border">
+      <div className="mx-5 mb-4 p-4 rounded-2xl bg-muted/50 border border-border opacity-70">
         <div className="flex items-center justify-between gap-3">
           <div>
-            <p className="text-sm font-heading font-bold">SafeHer Premium</p>
+            <div className="flex items-center gap-2">
+              <p className="text-sm font-heading font-bold">SafeHer Premium</p>
+              <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-muted-foreground/20 text-muted-foreground font-medium whitespace-nowrap">Coming Soon</span>
+            </div>
             <p className="text-xs text-muted-foreground">Unlock AI concierge, unlimited translations & more</p>
           </div>
-          <Button size="sm" className="rounded-xl safe-gradient text-primary-foreground text-xs flex-shrink-0">
-            Upgrade
+          <Button size="sm" disabled className="rounded-xl text-xs flex-shrink-0 cursor-not-allowed">
+            Coming Soon
           </Button>
         </div>
       </div>

@@ -4,6 +4,8 @@ import { useCity, useCitySafety } from "@/hooks/use-cities";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { CityImageCarousel } from "@/components/CityImageCarousel";
+import { getCityVisual } from "@/data/cityVisuals";
 
 const CityBriefingPage = () => {
   const navigate = useNavigate();
@@ -23,17 +25,31 @@ const CityBriefingPage = () => {
   }
 
   const safetyScore = Number(city.safety_score);
+  const visual = getCityVisual(city.name);
 
   return (
     <div className="flex flex-col min-h-full">
-      <div className="px-5 pt-2 pb-4 flex items-center gap-3">
-        <button onClick={() => navigate("/explore")} className="p-1">
-          <ArrowLeft className="w-5 h-5" />
+      {/* Hero image carousel */}
+      <div className="relative">
+        <CityImageCarousel
+          visual={visual}
+          cityName={city.name}
+          country={city.country}
+          region={city.region}
+          height="h-52"
+        />
+        <button
+          onClick={() => navigate("/explore")}
+          className="absolute top-3 left-3 z-10 p-2 rounded-full bg-black/30 backdrop-blur-sm text-white"
+        >
+          <ArrowLeft className="w-4 h-4" />
         </button>
-        <div>
-          <h1 className="text-xl font-heading font-bold">{city.name}</h1>
-          <p className="text-xs text-muted-foreground">{city.country} — Cultural & Safety Guide</p>
-        </div>
+      </div>
+
+      {/* Title below carousel */}
+      <div className="px-5 pt-4 pb-2">
+        <h1 className="text-xl font-heading font-bold">{city.name}</h1>
+        <p className="text-xs text-muted-foreground">{city.country} — Cultural & Safety Guide</p>
       </div>
 
       {/* Description */}
